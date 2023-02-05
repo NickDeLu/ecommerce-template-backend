@@ -9,7 +9,7 @@ import { AuthModule } from './auth/auth.module';
 import { UserModule } from './user/user.module';
 import configuration from '../config/configuration';
 import { JwtStrategy } from './auth/strategies/jwt.strategy';
-import { exceptionFilter } from './logs/exceptionFilter.provider';
+import { exceptionFilter } from './exceptionFilter.provider';
 import { MailModule } from './mail/mail.module';
 
 @Module({
