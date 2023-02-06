@@ -35,7 +35,7 @@ export class JwtRefreshStrategy extends PassportStrategy(
       secretOrKey: Buffer.from(
         configService.get<string>('jwt.refreshToken.secret'),
         'base64',
-      ).toString(), //protect this string, take from ENV file passRegToCallback: true,
+      ).toString(),
     });
   }
   async validate(request: Request, payload: any): Promise<UserEntity> {

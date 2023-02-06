@@ -17,20 +17,21 @@ export class RolesGuard implements CanActivate {
     private readonly authService: AuthService,
   ) {}
 
+  /**
+   * Checks if request user contains sufficient privilege to access a resource
+   * @param context execution context
+   * @returns true if authorized
+   */
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const requiredRoles = this.reflector.getAllAndOverride<Role[]>(ROLES_KEY, [
       context.getHandler(),
       context.getClass(),
     ]);
 
-    if (!requiredRoles) {
-      return true;
-    }
+    if (!requiredRoles) return true;
 
     const { user } = context.switchToHttp().getRequest();
-
     const roles = await this.authService.getRoles(user.id);
-
     const authorized = roles.some((role) =>
       requiredRoles.includes(role as Role),
     );
@@ -40,7 +41,6 @@ export class RolesGuard implements CanActivate {
         HttpStatus.FORBIDDEN,
       );
     }
-
     return authorized;
   }
 }

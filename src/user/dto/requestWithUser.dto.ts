@@ -1,9 +1,9 @@
 import { IsEmail, IsNotEmpty, IsString } from 'class-validator';
 import { UserEntity } from '../user.entity';
 
-export class RequestWithUser {
+export class RequestWithUserDto {
   @IsNotEmpty()
   user: UserEntity;
 }
 
-export default RequestWithUser;
+export default RequestWithUserDto;

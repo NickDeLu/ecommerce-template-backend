@@ -10,13 +10,13 @@ export const mailConfigFactory = (
     transport: {
       rejectUnauthorized: false,
       service: 'gmail',
-      secure: false,
+      secure: false, // in prod remove this
       auth: {
         user: configService.get<string>('mail.email'),
         pass: configService.get<string>('mail.password'),
       },
       tls: {
-        rejectUnauthorized: false,
+        rejectUnauthorized: false, //in prod remove this
       },
     },
     defaults: {

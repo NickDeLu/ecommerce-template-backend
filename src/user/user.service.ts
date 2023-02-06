@@ -11,6 +11,11 @@ export class UserService {
     private userRepository: Repository<UserEntity>,
   ) {}
 
+  /**
+   * Gets an user from a given userId, throws exception if not found
+   * @param userId the userId as a string
+   * @returns the user obj as UserEntity
+   */
   async getOneById(userId: string) {
     const user = await this.userRepository.findOne({
       where: { id: userId },
@@ -27,14 +32,11 @@ export class UserService {
     );
   }
 
-  async getAuthConfirmToken(userId: string) {
-    return this.userRepository
-      .createQueryBuilder('user')
-      .select('user.authConfirmToken')
-      .where('user.id = :userId', { userId: userId })
-      .getOne();
-  }
-
+  /**
+   * Gets an user from a given email, throws exception if not found
+   * @param email the email as a string
+   * @returns the user obj as UserEntity
+   */
   async getOneByEmail(email: string) {
     const user = await this.userRepository.findOne({
       where: { email },
@@ -51,11 +53,22 @@ export class UserService {
     );
   }
 
+  /**
+   * Creates a new user and saves it to the database
+   * @param userData the user data obj to save
+   * @returns the created user with its database id
+   */
   async create(userData: CreateUserDto) {
     const newUser = this.userRepository.create(userData);
     return await this.userRepository.save(newUser);
   }
 
+  /**
+   * Updates the current refresh token column of user entities
+   * @param refreshToken the new refresh token to update to old with
+   * @param userId the id of the user to update
+   * @returns the updated user obj
+   */
   async setCurrentRefreshToken(refreshToken: string, userId: string) {
     const currentHashedRefreshToken = await bcrypt.hash(refreshToken, 10);
     return this.updateHelper(userId, {
@@ -63,6 +76,11 @@ export class UserService {
     });
   }
 
+  /**
+   * Verifies an user's account by setting their isVerified flag to true
+   * @param userId the id of the user to verify
+   * @returns the updated user obj
+   */
   async verify(userId: string) {
     return await this.updateHelper(userId, {
       authConfirmToken: undefined,
@@ -70,6 +88,12 @@ export class UserService {
     });
   }
 
+  /**
+   * Gets an user obj if the given refresh token matches the user's current one
+   * @param refreshToken the refresh token to check if matches
+   * @param userId the id of the user to check
+   * @returns the user obj from the given id
+   */
   async getUserIfRefreshTokenMatches(
     refreshToken: any,
     userId: any,

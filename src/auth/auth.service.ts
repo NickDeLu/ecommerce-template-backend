@@ -20,6 +20,11 @@ export class AuthService {
     private readonly mailService: MailService,
   ) {}
 
+  /**
+   * Gets all the roles assigned to an user based on a given user id
+   * @param userId the id of the user
+   * @returns roles assigned to the user as a list of string enums
+   */
   async getRoles(userId: any) {
     const roles = await this.roleRepository.find({ where: { userId } });
     if (roles.length == 0) {
@@ -31,6 +36,11 @@ export class AuthService {
     return roles.map((role) => role.role);
   }
 
+  /**
+   * Assigns a list of one or more roles to an user based on a given user id
+   * @param userId the id of the user
+   * @param roles the list of role enums to assign to the user
+   */
   async setRoles(userId: any, roles: [Role]) {
     for (let i = 0, role = roles[i]; i < roles.length; i++) {
       const newRole = this.roleRepository.create({ userId, role: role });
@@ -38,6 +48,11 @@ export class AuthService {
     }
   }
 
+  /**
+   * Registers new user accounts, generates 2fa codes, and sends confirmation emails
+   * @param registrationData the user obj data to register
+   * @returns the newly registered user obj with its database id
+   */
   async register(registrationData: RegisterUserDto) {
     const hashedPassword = await bcrypt.hash(registrationData.password, 10);
     const twoFACode = Math.floor(10000 + Math.random() * 90000);
@@ -64,6 +79,11 @@ export class AuthService {
     }
   }
 
+  /**
+   * Verifies new user accounts by matching a given 2fa code with the database, sends verification success email
+   * @param code the code to attempt to match
+   * @param userId the id of the user to verify
+   */
   async verifyAccount(code: number, userId: string): Promise<any> {
     try {
       const user = await this.userService.getOneById(userId);
@@ -85,6 +105,12 @@ export class AuthService {
     }
   }
 
+  /**
+   * Authenticates an user from given credentials and returns its user obj if successful
+   * @param email the email credential of the user
+   * @param hashedPassword the password credential of the user (hashed)
+   * @returns the authenticated user object or throws exception
+   */
   async getAuthenticatedUser(email: string, hashedPassword: string) {
     try {
       const user = await this.userService.getOneByEmail(email);
@@ -154,6 +180,10 @@ export class AuthService {
     return { cookie, refresh_token };
   }
 
+  /**
+   * Helper function for returning cookie strings used to replace/clear client's authentication cookies
+   * @returns formatted cookie strings for logout
+   */
   public getCookiesForLogOut() {
     return [
       'Authentication=; HttpOnly; Path=/',

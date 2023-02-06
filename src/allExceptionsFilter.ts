@@ -17,7 +17,11 @@ export class AllExceptionsFilter implements ExceptionFilter {
     private readonly jwtService: JwtService,
     private readonly configService: ConfigService,
   ) {}
-
+  /**
+   * Overriding the default exceptions filter catch method in Nestjs
+   * @param exception the incoming exception of any type, no type specified in the catch
+   * @param host contains helper arguments to be passed to the handler
+   */
   catch(exception: any, host: ArgumentsHost) {
     const ctx = host.switchToHttp();
     const response = ctx.getResponse<Response>();
@@ -46,6 +50,14 @@ export class AllExceptionsFilter implements ExceptionFilter {
     response.status(status).json(errorResponse);
   }
 
+  /**
+   * Gets a parsed response object for incoming exceptions
+   * @private
+   * @param status status of exception
+   * @param errorMessage message of exception
+   * @param request request obj of exception
+   * @returns parsed response object
+   */
   private getErrorResponse = (
     status: HttpStatus,
     errorMessage: any,
@@ -59,6 +71,12 @@ export class AllExceptionsFilter implements ExceptionFilter {
     timeStamp: new Date(),
   });
 
+  /**
+   * Detects any errors from jwt exceptions
+   * @private
+   * @param request the request obj of exception
+   * @returns jwt errors or null
+   */
   private getTokenError(request: any) {
     try {
       if (request?.cookies?.Authentication != null)
@@ -82,20 +100,14 @@ export class AllExceptionsFilter implements ExceptionFilter {
       return error;
     }
   }
+
   /**
-
-  Gets the authenticated userId if the access_token received is present, valid, and not malformed.
-
-@private
-
-@param {*} request - the request that threw an exception
-
-* @return {*} - the userId of the request user or null
-
-@memberof AllExceptionsFilter
-
-*/
-
+   * Gets the authenticated userId if the access_token received is present, valid, and not malformed.
+   * @private
+   * @param {*} request - the request that threw an exception
+   * @return {*} - the userId of the request user or null
+   * @memberof AllExceptionsFilter
+   */
   private getAuthenticatedUser(request) {
     if (request?.cookies?.Authentication != null) {
       let tokenDecoded = this.jwtService.decode(
@@ -114,6 +126,15 @@ export class AllExceptionsFilter implements ExceptionFilter {
     }
   }
 
+  /**
+   * Gets a parsed error log string thats written to log files.
+   * @private
+   * @param errorResponse parsed response obj of exception
+   * @param request request obj og exception
+   * @param exception exception obj
+   * @param tokenError any jwt related errors
+   * @returns a parsed log string for log files
+   */
   private getErrorLog = (
     errorResponse: any,
     request: Request,
@@ -128,9 +149,14 @@ export class AllExceptionsFilter implements ExceptionFilter {
     return errorLog;
   };
 
+  /**
+   * A helper function to write log strings to log files
+   * @private
+   * @param errorLog the parsed log string to be written to log files
+   */
   private writeErrorLogToFile = (errorLog: string): void => {
     fs.appendFile(
-      path.join(__dirname, '../../../src/logs/error.log'),
+      path.join(__dirname, '../../src/logs/error.log'),
       errorLog,
       'utf8',
       (err) => {
