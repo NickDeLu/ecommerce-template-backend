@@ -12,26 +12,32 @@ import { JwtStrategy } from './auth/strategies/jwt.strategy';
 import { exceptionFilter } from './exceptionFilter.provider';
 import { MailModule } from './mail/mail.module';
 import { ServeStaticModule } from '@nestjs/serve-static';
+import { LogsController } from './logs/logs.controller';
 import * as path from 'path';
+import { ScheduleModule } from '@nestjs/schedule';
+import { TasksService } from './tasks/tasks.service';
 
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true, load: [configuration] }),
     ServeStaticModule.forRoot({
       rootPath: path.join(__dirname, '../../', 'documentation'),
+      renderPath: '/api',
     }),
+    ScheduleModule.forRoot(),
     DatabaseModule,
     AuthModule,
     UserModule,
     MailModule,
   ],
-  controllers: [AppController],
+  controllers: [AppController, LogsController],
   providers: [
     AppService,
     AuthService,
     UserService,
     JwtStrategy,
     ...exceptionFilter,
+    TasksService,
   ],
 })
 export class AppModule {}

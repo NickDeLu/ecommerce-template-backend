@@ -6,14 +6,12 @@ import { UserService } from 'src/user/user.service';
 import { UserEntity } from 'src/user/user.entity';
 import { ConfigService } from '@nestjs/config';
 
-/** 
-@export
-
-@class JutRefreshStrategy - Custom passport strategy to validate a refresh token to allow access to refreshing an expired token, * checks if refresh token is in the database and can be mapped to the request user.
-
-* @extends {PassportStrategy (Strategy, 'jwt-refresh')} extends passport strategy to add custom logic
-
-*/
+/**
+ * @export
+ * @class JwtRefreshStrategy - Custom passport strategy to validate a refresh token to allow access to refreshing an expired token,
+ * checks if refresh token is in the database and can be mapped to the request user.
+ * @extends {PassportStrategy (Strategy, 'jwt-refresh')} extends passport strategy to add custom logic
+ */
 
 @Injectable()
 export class JwtRefreshStrategy extends PassportStrategy(
