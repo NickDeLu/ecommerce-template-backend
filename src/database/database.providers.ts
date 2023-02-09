@@ -12,7 +12,7 @@ export const databaseProviders = [
         port: configService.get('db.mysql.port'),
         username: configService.get('db.mysql.username'),
         password: configService.get('db.mysql.password'),
-        database: 'ecom',
+        database: configService.get('db.mysql.database'),
         entities: [__dirname + '/../**/*.entity{.ts,.js}'],
         synchronize: true,
       });

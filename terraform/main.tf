@@ -9,6 +9,13 @@ terraform {
 
 variable "ACCESS_KEY_ID" {}
 variable "ACCESS_KEY" {}
+variable "dbuser" {}
+variable "dbpwd" {}
+variable "host" {}
+variable "database" {}
+variable "accesssecret" {}
+variable "refreshsecret" {}
+variable "emailpwd" {}
 
 provider "aws" {
     region = "us-east-1"
@@ -56,7 +63,42 @@ resource "aws_instance" "ecom-api" {
                 sudo yum install nodejs -y
                 sudo systemctl start httpd
                 sudo systemctl enable httpd
-                git clone https://github.com/NickDeLu/backend-template /var/repo && cd /var/repo && sudo npm i && sudo npm run build && mv /var/repo/dist /var/www/html/
+                sudo su
+                git clone --branch ecommerce-template https://github.com/NickDeLu/backend-template.git /var/repo 
+                sleep 15
+                cd /var/repo
+                   echo "
+                   http:
+                        host: '127.0.0.1'
+                        port: 3000
+
+                    db:
+                        mysql:
+                            host: '${var.host}'
+                            port: 3306
+                            database: '${var.database}'
+                            username: '${var.dbuser}'
+                            password: '${var.dbpwd}'
+
+                    jwt:
+                        accessToken:
+                            secret: '${var.accesssecret}'
+                            expires: '1200'
+                        refreshToken:
+                            secret: '${var.refreshsecret}'
+                            expires: '604800'
+
+                    mail: 
+                        email: 'nickdelucrative@gmail.com'
+                        password: '${var.emailpwd}'
+                        from: 'noreply@ndeluca.ca'" >> /etc/httpd/conf.d/nestjs.conf
+                sudo npm i && sudo npm run build && sudo npm run start:prod
+                echo "<Location />
+                    ProxyPass http://localhost:3000/
+                    ProxyPassReverse http://localhost:3000/
+                    </Location>
+                    " >> /etc/httpd/conf.d/nestjs.conf
+                sudo systemctl restart httpd
                 EOF
     tags = {
         name = "ecommerce-api"
