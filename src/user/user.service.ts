@@ -1,8 +1,9 @@
 import { HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
-import { Repository } from 'typeorm';
+import { DeleteResult, Repository } from 'typeorm';
 import { UserEntity } from './user.entity';
 import * as bcrypt from 'bcrypt';
 import CreateUserDto from './dto/createUser.dto';
+import UpdateUserDto from './dto/updateUser.dto';
 
 @Injectable()
 export class UserService {
@@ -10,6 +11,10 @@ export class UserService {
     @Inject('USER_REPOSITORY')
     private userRepository: Repository<UserEntity>,
   ) {}
+
+  getAll(): Promise<UserEntity[]> {
+    return this.userRepository.find();
+  }
 
   /**
    * Gets an user from a given userId, throws exception if not found
@@ -21,6 +26,8 @@ export class UserService {
       where: { id: userId },
       relations: {
         roles: true,
+        addresses: true,
+        payments: true,
       },
     });
     if (user) {
@@ -42,6 +49,8 @@ export class UserService {
       where: { email },
       relations: {
         roles: true,
+        addresses: true,
+        payments: true,
       },
     });
     if (user) {
@@ -61,6 +70,14 @@ export class UserService {
   async create(userData: CreateUserDto) {
     const newUser = this.userRepository.create(userData);
     return await this.userRepository.save(newUser);
+  }
+
+  async updateUser(userId: string, user: UpdateUserDto) {
+    return await this.updateHelper(userId, user);
+  }
+
+  async deleteUser(id: string): Promise<DeleteResult> {
+    return await this.userRepository.delete({ id });
   }
 
   /**

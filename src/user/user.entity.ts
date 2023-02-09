@@ -1,5 +1,7 @@
 import { Exclude } from 'class-transformer';
+import { AddressEntity } from 'src/address/address.entity';
 import { RoleEntity } from 'src/auth/roles/role.entity';
+import { PaymentEntity } from 'src/payment/payment.entity';
 import {
   Entity,
   Column,
@@ -56,6 +58,12 @@ export class UserEntity {
   @OneToMany(() => RoleEntity, (role) => role.user)
   @Exclude()
   roles?: RoleEntity[];
+
+  @OneToMany(() => AddressEntity, (address) => address.user)
+  addresses?: AddressEntity[];
+
+  @OneToMany(() => PaymentEntity, (payment) => payment.user)
+  payments?: PaymentEntity[];
 
   getPassword(): string {
     return this.password;

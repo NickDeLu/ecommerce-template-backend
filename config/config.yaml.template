@@ -1,0 +1,24 @@
+http:
+  host: '127.0.0.1'
+  port: 3000
+
+db:
+  mysql:
+    host: 'localhost'
+    port: 3306
+    database: 'test'
+    username: 'user'
+    password: '1234'
+
+jwt:
+  accessToken:
+    secret: 'base64encrypted'
+    expires: '100'
+  refreshToken:
+    secret: 'base64encrypted'
+    expires: '100'
+
+mail: 
+  email: 'info@mail.com'
+  password: '1234'
+  from: 'noreply@mail.ca'

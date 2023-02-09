@@ -10,6 +10,12 @@ yarn-debug.log*
 yarn-error.log*
 lerna-debug.log*
 
+#keys
+*.pem
+
+#ENV Vars
+**/*.env
+
 # OS
 .DS_Store
 

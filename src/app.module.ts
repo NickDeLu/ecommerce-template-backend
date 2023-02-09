@@ -16,6 +16,13 @@ import { LogsController } from './logs/logs.controller';
 import * as path from 'path';
 import { ScheduleModule } from '@nestjs/schedule';
 import { TasksService } from './tasks/tasks.service';
+import { ProductModule } from './product/product.module';
+import { AddressModule } from './address/address.module';
+import { OrderModule } from './order/order.module';
+import { ReviewsModule } from './reviews/reviews.module';
+import { PromotionModule } from './promotion/promotion.module';
+import { PaymentModule } from './payment/payment.module';
+import { CategoryModule } from './category/category.module';
 
 @Module({
   imports: [
@@ -29,6 +36,13 @@ import { TasksService } from './tasks/tasks.service';
     AuthModule,
     UserModule,
     MailModule,
+    ProductModule,
+    AddressModule,
+    OrderModule,
+    ReviewsModule,
+    PromotionModule,
+    PaymentModule,
+    CategoryModule,
   ],
   controllers: [AppController, LogsController],
   providers: [
