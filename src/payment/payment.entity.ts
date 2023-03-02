@@ -14,7 +14,7 @@ export class PaymentEntity {
   id: string;
 
   @Exclude()
-  @ManyToOne(() => UserEntity, (user) => user.addresses)
+  @ManyToOne(() => UserEntity, (user) => user.payments)
   user: UserEntity;
 
   @Column()

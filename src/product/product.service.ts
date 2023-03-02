@@ -1,7 +1,9 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { DeleteResult, Repository } from 'typeorm';
 import CreateProductDto from './dto/createProduct.dto';
+import setProductMetadataDto from './dto/setProductMetadata.dto';
 import UpdateProductDto from './dto/updateProduct.dto';
+import { ProductMetadata } from './metadata/metadata.entity';
 import { ProductEntity } from './product.entity';
 
 @Injectable()
@@ -9,14 +11,24 @@ export class ProductService {
   constructor(
     @Inject('PRODUCT_REPOSITORY')
     private productRepository: Repository<ProductEntity>,
+    @Inject('PRODUCT_METADATA_REPOSITORY')
+    private productMetadataRepository: Repository<ProductMetadata>,
   ) {}
+
+  setProductMetaData(body: setProductMetadataDto): any {
+    const newRelationship = this.productMetadataRepository.create(body);
+    return this.productMetadataRepository.save(newRelationship);
+  }
 
   getAll(): Promise<ProductEntity[]> {
     return this.productRepository.find();
   }
 
   getOneById(id: string): Promise<ProductEntity> {
-    return this.productRepository.findOne({ where: { id } });
+    return this.productRepository.findOne({
+      where: { id },
+      relations: ['metadataGroups', 'metadataGroups.metadataOptions'],
+    });
   }
 
   getAllByCategory(categoryId: string): Promise<ProductEntity[]> {

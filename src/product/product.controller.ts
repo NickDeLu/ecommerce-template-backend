@@ -25,7 +25,9 @@ import { Roles } from 'src/auth/roles/roles.decorator';
 import { RolesGuard } from 'src/auth/roles/roles.guard';
 import CreateProductDto from './dto/createProduct.dto';
 import { ProductDto } from './dto/product.dto';
+import setProductMetadataDto from './dto/setProductMetadata.dto';
 import UpdateProductDto from './dto/updateProduct.dto';
+import { MetadataService } from './metadata/metadata.service';
 import { ProductEntity } from './product.entity';
 import { ProductService } from './product.service';
 
@@ -33,6 +35,15 @@ import { ProductService } from './product.service';
 @Controller('product')
 export class ProductController {
   constructor(private readonly productService: ProductService) {}
+
+  @Roles(Role.Admin)
+  @UseGuards(AuthGuard('jwt'), RolesGuard)
+  @ApiCookieAuth()
+  @ApiBearerAuth()
+  @Post('setmetadata')
+  setProductMetadata(@Body() body: setProductMetadataDto) {
+    return this.productService.setProductMetaData(body);
+  }
 
   @ApiQuery({ name: 'categoryId', type: 'string', required: false })
   @Get()

@@ -1,4 +1,5 @@
 import { ConfigService } from '@nestjs/config';
+import { MongooseModule } from '@nestjs/mongoose';
 import { DataSource } from 'typeorm';
 
 export const databaseProviders = [

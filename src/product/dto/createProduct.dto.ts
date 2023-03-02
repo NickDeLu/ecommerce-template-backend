@@ -13,6 +13,17 @@ export class CreateProductDto {
   @ApiProperty({ description: 'The price of the product' })
   price: number;
 
+  @IsNumber()
+  @IsNotEmpty()
+  @IsOptional()
+  @ApiProperty({
+    description:
+      'The percent decimal of the products displayed discount off the base price',
+    required: false,
+    default: 0.0,
+  })
+  salePctOff: number;
+
   @IsString()
   @IsNotEmpty()
   @ApiProperty({ description: 'The name of the product' })
@@ -22,6 +33,11 @@ export class CreateProductDto {
   @IsNotEmpty()
   @ApiProperty({ description: 'The description of the product' })
   description: string;
+
+  @IsString()
+  @IsNotEmpty()
+  @ApiProperty({ description: 'The public image url for the image' })
+  imgUrl: string;
 
   @IsBoolean()
   @IsNotEmpty()

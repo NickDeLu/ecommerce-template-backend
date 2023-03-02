@@ -16,6 +16,10 @@ export class UserService {
     return this.userRepository.find();
   }
 
+  async resetAuthToken(userId: string, twoFACode: number) {
+    return await this.updateHelper(userId, { authConfirmToken: twoFACode });
+  }
+
   /**
    * Gets an user from a given userId, throws exception if not found
    * @param userId the userId as a string

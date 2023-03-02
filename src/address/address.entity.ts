@@ -6,6 +6,7 @@ import {
   PrimaryGeneratedColumn,
   ManyToOne,
   BeforeUpdate,
+  JoinColumn,
 } from 'typeorm';
 
 @Entity('address')
@@ -13,12 +14,12 @@ export class AddressEntity {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column()
-  userId: string;
-
   @Exclude()
   @ManyToOne(() => UserEntity, (user) => user.addresses)
   user: UserEntity;
+
+  @Column()
+  userId: string;
 
   @Column()
   addressType: 'shipping' | 'billing';

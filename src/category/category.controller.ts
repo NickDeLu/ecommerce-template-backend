@@ -48,7 +48,7 @@ export class CategoryController {
   @ApiCookieAuth()
   @ApiBearerAuth()
   @Post()
-  createProduct(@Body() category: CreateCategoryDto) {
+  createCategory(@Body() category: CreateCategoryDto) {
     return plainToClass(
       CategoryEntity,
       this.categoryService.createCategory(category),
@@ -60,9 +60,9 @@ export class CategoryController {
   @ApiCookieAuth()
   @ApiBearerAuth()
   @Put(':id')
-  updateProduct(@Param('id') id: string, @Body() category: UpdateCategoryDto) {
+  updateCategory(@Param('id') id: string, @Body() category: UpdateCategoryDto) {
     return plainToClass(
-      ProductEntity,
+      CategoryEntity,
       this.categoryService.updateCategory(id, category),
     );
   }
@@ -72,7 +72,7 @@ export class CategoryController {
   @ApiCookieAuth()
   @ApiBearerAuth()
   @Delete(':id')
-  deleteProduct(@Param('id') id: string) {
+  deleteCategory(@Param('id') id: string) {
     return this.categoryService.deleteCategory(id);
   }
 }

@@ -23,6 +23,8 @@ import { ReviewsModule } from './reviews/reviews.module';
 import { PromotionModule } from './promotion/promotion.module';
 import { PaymentModule } from './payment/payment.module';
 import { CategoryModule } from './category/category.module';
+import { AppDataModule } from './app-data/app-data.module';
+import { StorageModule } from './storage/storage.module';
 
 @Module({
   imports: [
@@ -43,6 +45,8 @@ import { CategoryModule } from './category/category.module';
     PromotionModule,
     PaymentModule,
     CategoryModule,
+    AppDataModule,
+    StorageModule,
   ],
   controllers: [AppController, LogsController],
   providers: [

@@ -4,6 +4,7 @@ import {
   Get,
   HttpCode,
   Post,
+  Query,
   Req,
   Res,
   UseGuards,
@@ -14,6 +15,7 @@ import {
   ApiBearerAuth,
   ApiBody,
   ApiCookieAuth,
+  ApiQuery,
   ApiTags,
 } from '@nestjs/swagger';
 import LoginUserDto from 'src/user/dto/loginUser.dto';
@@ -43,7 +45,7 @@ export class AuthController {
    * @returns 200 Ok if successful, throws error if unsuccessful
    */
   @Post('register')
-  @HttpCode(200)
+  @HttpCode(201)
   register(@Body() registrationData: RegisterUserDto) {
     return plainToClass(
       UserEntity,
@@ -63,13 +65,26 @@ export class AuthController {
   }
 
   /**
+   * Verify a new user account
+   * @param body code and userId
+   * @returns 200 Ok if successful, throws error if unsuccessful
+   */
+  @Get('code/resend')
+  @HttpCode(200)
+  @ApiQuery({ name: 'userId', type: 'string', required: true })
+  async resendCode(@Query('userId') userId: string) {
+    await this.authService.generateNewCode(userId);
+    return 'A new code was generated, and another email was sent.';
+  }
+
+  /**
    * Login a user with login credentials,
    * @param req plaintext email and password
    * @param response the authenticated user obj, throws error if unsuccessful
    */
-  @Roles(Role.customer)
-  @UseGuards(AuthGuard('local'), RolesGuard)
+  @UseGuards(AuthGuard('local'))
   @Post('login')
+  @HttpCode(200)
   @ApiBody({ type: LoginUserDto })
   login(@Req() req: RequestWithUserDto, @Res() response: any) {
     const { user } = req;
@@ -82,7 +97,7 @@ export class AuthController {
     const tokenExpiry = new Date();
     tokenExpiry.setSeconds(
       tokenExpiry.getSeconds() +
-        this.configService.get<number>('jwt.accessToken.expires'),
+        Number(this.configService.get<number>('jwt.accessToken.expires')),
     );
     response.setHeader('set-cookie', [accessTokenCookie, refreshTokenCookie]);
     response.send({
@@ -97,8 +112,7 @@ export class AuthController {
    * @param response response obj to send logout cookies
    * @returns 200 Ok if successful, throws error if unsuccessful
    */
-  @Roles(Role.customer)
-  @UseGuards(AuthGuard('jwt'), RolesGuard)
+  @UseGuards(AuthGuard('jwt'))
   @ApiCookieAuth()
   @ApiBearerAuth()
   @Get('logout')
@@ -114,15 +128,22 @@ export class AuthController {
    * @param response response obj to send new authentication cookies
    * @returns 200 Ok if successful, throws error if unsuccessful
    */
-  @Roles(Role.customer)
-  @UseGuards(AuthGuard('jwt-refresh'), RolesGuard)
+  @UseGuards(AuthGuard('jwt-refresh'))
   @ApiCookieAuth()
+  @HttpCode(200)
   @Get('refresh')
   refreshToken(@Req() request: any, @Res() response: any) {
     const accessTokenCookie = this.authService.getCookieWithJwtAccessToken(
       request.user.id,
     );
     response.setHeader('set-cookie', accessTokenCookie);
-    return response.sendStatus(200);
+    const tokenExpiry = new Date();
+    tokenExpiry.setSeconds(
+      tokenExpiry.getSeconds() +
+        Number(this.configService.get<number>('jwt.accessToken.expires')),
+    );
+    return response.send({
+      access_token_expiry: tokenExpiry.toString(),
+    });
   }
 }

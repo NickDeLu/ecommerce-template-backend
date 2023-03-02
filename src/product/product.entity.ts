@@ -1,5 +1,13 @@
 import { Exclude, Type } from 'class-transformer';
-import { Entity, Column, PrimaryGeneratedColumn, BeforeUpdate } from 'typeorm';
+import {
+  Entity,
+  Column,
+  PrimaryGeneratedColumn,
+  BeforeUpdate,
+  ManyToMany,
+  JoinTable,
+} from 'typeorm';
+import { MetadataGroup } from './metadata/metadata.entity';
 
 @Entity('product')
 export class ProductEntity {
@@ -11,6 +19,9 @@ export class ProductEntity {
 
   @Column()
   description: string;
+
+  @Column()
+  imgUrl: string;
 
   @Column({ default: true })
   isEnabled: boolean;
@@ -27,6 +38,27 @@ export class ProductEntity {
 
   @Column()
   categoryId: string;
+
+  @Type(() => Number)
+  @Column('decimal', { precision: 10, scale: 2, default: 0.0 })
+  salePctOff: number;
+
+  @ManyToMany(() => MetadataGroup, {
+    onDelete: 'NO ACTION',
+    onUpdate: 'NO ACTION',
+  })
+  @JoinTable({
+    name: 'product_metadata',
+    joinColumn: {
+      name: 'productId',
+      referencedColumnName: 'id',
+    },
+    inverseJoinColumn: {
+      name: 'metadataGroupId',
+      referencedColumnName: 'id',
+    },
+  })
+  metadataGroups?: MetadataGroup[];
 
   @BeforeUpdate()
   setUpdatedAt() {

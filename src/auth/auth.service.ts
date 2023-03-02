@@ -62,7 +62,9 @@ export class AuthService {
         password: hashedPassword,
         authConfirmToken: twoFACode,
       });
-      this.mailService.sendConfirmationEmail(createdUser, twoFACode);
+      this.mailService
+        .sendConfirmationEmail(createdUser, twoFACode)
+        .catch((e) => console.log(e)); //catch async error
       return createdUser;
     } catch (error) {
       if ((error.errno = 1062)) {
@@ -98,11 +100,21 @@ export class AuthService {
       await this.mailService.sendConfirmedEmail(user);
       await this.setRoles(user.id, [Role.customer]);
     } catch (e) {
+      console.log(e);
       throw new HttpException(
         'Failed to verify user account',
         HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }
+  }
+
+  async generateNewCode(userId: string) {
+    const twoFACode = Math.floor(10000 + Math.random() * 90000);
+    const updatedUser = await this.userService.resetAuthToken(
+      userId,
+      twoFACode,
+    );
+    return await this.mailService.sendConfirmationEmail(updatedUser, twoFACode);
   }
 
   /**

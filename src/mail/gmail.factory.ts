@@ -9,9 +9,8 @@ export const mailConfigFactory = (
   return {
     transport: {
       rejectUnauthorized: false,
+      service: 'gmail',
       secure: false, // in prod remove this
-      host: configService.get<string>('mail.host'),
-      port: configService.get<string>('mail.port'),
       auth: {
         user: configService.get<string>('mail.email'),
         pass: configService.get<string>('mail.password'),

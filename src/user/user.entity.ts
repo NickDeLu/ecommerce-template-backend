@@ -39,7 +39,6 @@ export class UserEntity {
   updatedAt: Date;
 
   @Column({ default: false })
-  @Exclude()
   isVerified: boolean;
 
   @Column({ nullable: true })

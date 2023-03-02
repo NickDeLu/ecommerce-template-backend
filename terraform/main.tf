@@ -9,10 +9,10 @@ terraform {
 
 variable "ACCESS_KEY_ID" {}
 variable "ACCESS_KEY" {}
-variable "dbuser" {}
-variable "dbpwd" {}
 variable "host" {}
 variable "database" {}
+variable "dbuser" {}
+variable "dbpwd" {}
 variable "accesssecret" {}
 variable "refreshsecret" {}
 variable "emailpwd" {}
@@ -59,7 +59,7 @@ resource "aws_instance" "ecom-api" {
                 sudo yum update -y
                 sudo yum install git httpd curl -y
                 cd /var/repo
-                curl -sL https://rpm.nodesource.com/setup_14.x | sudo -E bash -
+                curl -sL https://rpm.nodesource.com/setup_18.x | sudo -E bash -
                 sudo yum install nodejs -y
                 sudo systemctl start httpd
                 sudo systemctl enable httpd
@@ -89,9 +89,11 @@ resource "aws_instance" "ecom-api" {
                             expires: '604800'
 
                     mail: 
+                        host: 'smtp.elasticemail.com'
+                        port: 2525
                         email: 'nickdelucrative@gmail.com'
                         password: '${var.emailpwd}'
-                        from: 'noreply@ndeluca.ca'" >> /etc/httpd/conf.d/nestjs.conf
+                        from: 'nickdelucrative@gmail.com'" >> /var/repo/config.yaml
                 sudo npm i && sudo npm run build && sudo npm run start:prod
                 echo "<Location />
                     ProxyPass http://localhost:3000/
