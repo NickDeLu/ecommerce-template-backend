@@ -93,7 +93,7 @@ resource "aws_instance" "ecom-api" {
                         port: 2525
                         email: 'nickdelucrative@gmail.com'
                         password: '${var.emailpwd}'
-                        from: 'nickdelucrative@gmail.com'" >> /var/repo/config.yaml
+                        from: 'nickdelucrative@gmail.com'" >> /var/repo/config/config.yaml
                 sudo npm i && sudo npm run build && sudo npm run start:prod
                 echo "<Location />
                     ProxyPass http://localhost:3000/
