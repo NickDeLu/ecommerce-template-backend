@@ -59,11 +59,11 @@ resource "aws_instance" "ecom-api" {
                 sudo yum update -y
                 sudo yum install git httpd curl -y
                 cd /var/repo
-                curl -sL https://rpm.nodesource.com/setup_18.x | sudo -E bash -
+                curl -sL https://rpm.nodesource.com/setup_14.x | sudo -E bash -
                 sudo yum install nodejs -y
                 sudo systemctl start httpd
                 sudo systemctl enable httpd
-                sudo su
+                sudo su 
                 git clone --branch ecommerce-template https://github.com/NickDeLu/backend-template.git /var/repo 
                 sleep 15
                 cd /var/repo
