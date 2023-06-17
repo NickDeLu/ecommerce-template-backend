@@ -6,6 +6,7 @@ import {
   Param,
   Post,
   Put,
+  Query,
   UseGuards,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
@@ -13,6 +14,7 @@ import {
   ApiBearerAuth,
   ApiCookieAuth,
   ApiParam,
+  ApiQuery,
   ApiTags,
 } from '@nestjs/swagger';
 import { Role } from 'src/auth/roles/role.enum';
@@ -76,9 +78,14 @@ export class MetadataController {
   @UseGuards(AuthGuard('jwt'), RolesGuard)
   @ApiCookieAuth()
   @ApiBearerAuth()
+  @ApiQuery({ name: 'categoryId', type: 'string', required: false })
   @Get('option')
-  getMetadataOptions() {
-    return this.metadataService.getMetadataOptions();
+  getMetadataOptions(@Query('metadataGroupId') mgId: string = null) {
+    if (mgId) {
+      return this.metadataService.getMetadataOptionsByGroup(mgId);
+    } else {
+      return this.metadataService.getAllMetadataOptions();
+    }
   }
 
   @Roles(Role.Admin)

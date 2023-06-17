@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import * as path from 'path';
 import { promises } from 'fs';
 
@@ -22,12 +22,27 @@ export class StorageService {
     }
   }
 
-  mkdir(localPath: string) {
-    throw new Error('Method not implemented.');
+  async mkdir(localPath: string) {
+    let alreadyExists = false;
+    try {
+      try {
+        await promises.access(this.root + localPath);
+        alreadyExists = true;
+      } catch (error) {
+        promises.mkdir(this.root + localPath);
+      }
+    } catch (err) {
+      console.error(err);
+    }
+    if (alreadyExists) {
+      throw new HttpException(
+        'A folder of that name already exists',
+        HttpStatus.CONFLICT,
+      );
+    }
   }
 
   async upload(localPath: string, files: any) {
-    console.log(files);
     try {
       for (let file of files) {
         await promises.rename(

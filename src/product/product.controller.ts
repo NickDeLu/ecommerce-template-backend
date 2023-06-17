@@ -7,6 +7,7 @@ import {
   Post,
   Put,
   Query,
+  Req,
   Res,
   UseGuards,
 } from '@nestjs/common';
@@ -20,6 +21,7 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { plainToClass, plainToInstance } from 'class-transformer';
+import { AuthService } from 'src/auth/auth.service';
 import { Role } from 'src/auth/roles/role.enum';
 import { Roles } from 'src/auth/roles/roles.decorator';
 import { RolesGuard } from 'src/auth/roles/roles.guard';
@@ -34,7 +36,10 @@ import { ProductService } from './product.service';
 @ApiTags('Products')
 @Controller('product')
 export class ProductController {
-  constructor(private readonly productService: ProductService) {}
+  constructor(
+    private readonly productService: ProductService,
+    private readonly authService: AuthService,
+  ) {}
 
   @Roles(Role.Admin)
   @UseGuards(AuthGuard('jwt'), RolesGuard)
@@ -62,6 +67,23 @@ export class ProductController {
           (product) => product.isEnabled,
         ),
       );
+    }
+  }
+
+  @Roles(Role.Admin)
+  @UseGuards(AuthGuard('jwt'), RolesGuard)
+  @ApiCookieAuth()
+  @ApiBearerAuth()
+  @ApiQuery({ name: 'categoryId', type: 'string', required: false })
+  @Get('detailed')
+  async getProductsDetailed(@Query('categoryId') catId: string = null) {
+    if (catId) {
+      return plainToInstance(
+        ProductEntity,
+        await this.productService.getAllByCategory(catId),
+      );
+    } else {
+      return plainToInstance(ProductEntity, await this.productService.getAll());
     }
   }
 

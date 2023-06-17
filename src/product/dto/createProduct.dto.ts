@@ -35,8 +35,11 @@ export class CreateProductDto {
   description: string;
 
   @IsString()
-  @IsNotEmpty()
-  @ApiProperty({ description: 'The public image url for the image' })
+  @IsOptional()
+  @ApiProperty({
+    description: 'The public image url for the image',
+    required: false,
+  })
   imgUrl: string;
 
   @IsBoolean()

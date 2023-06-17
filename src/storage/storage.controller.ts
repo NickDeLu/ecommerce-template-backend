@@ -15,9 +15,10 @@ import {
   ApiCookieAuth,
   ApiParam,
   ApiQuery,
+  ApiTags,
 } from '@nestjs/swagger';
 import { StorageService } from './storage.service';
-
+@ApiTags('Storage')
 @Controller('storage/local')
 export class StorageController {
   constructor(private readonly storageService: StorageService) {}
@@ -43,7 +44,6 @@ export class StorageController {
     @Query('path') path: string = '/',
     @UploadedFiles() files: Array<Express.Multer.File>,
   ) {
-    console.log(path);
     return this.storageService.upload(path, files);
   }
 

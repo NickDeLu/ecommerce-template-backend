@@ -29,8 +29,11 @@ export class MetadataService {
     return this.metadataGroupRepository.save(newEntity);
   }
   //metadata options
-  getMetadataOptions() {
+  getAllMetadataOptions() {
     return this.metadataOptionRepository.find();
+  }
+  getMetadataOptionsByGroup(metadataGroupId: string) {
+    return this.metadataOptionRepository.find({ where: { metadataGroupId } });
   }
   deleteMetadataOption(id: string) {
     return this.metadataOptionRepository.delete({ id });

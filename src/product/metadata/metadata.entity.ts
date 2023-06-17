@@ -56,6 +56,7 @@ export class MetadataOption {
   @ManyToOne(
     () => MetadataGroup,
     (metadataGroup) => metadataGroup.metadataOptions,
+    { onDelete: 'CASCADE', onUpdate: 'NO ACTION' },
   )
   metadataGroup: MetadataGroup;
 }
