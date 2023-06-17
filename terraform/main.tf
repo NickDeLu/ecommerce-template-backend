@@ -64,43 +64,45 @@ resource "aws_instance" "ecom-api" {
                 sudo systemctl start httpd
                 sudo systemctl enable httpd
                 sudo su 
-                git clone --branch ecommerce-template https://github.com/NickDeLu/backend-template.git /var/repo 
-                sleep 15
+                git clone --branch ecommerce-template https://github.com/NickDeLu/backend-template.git /var/repo ;
                 cd /var/repo
-                   echo "
-                   http:
-                        host: '127.0.0.1'
-                        port: 3000
+echo "http:
+    host: '127.0.0.1'
+    port: 3000
 
-                    db:
-                        mysql:
-                            host: '${var.host}'
-                            port: 3306
-                            database: '${var.database}'
-                            username: '${var.dbuser}'
-                            password: '${var.dbpwd}'
+db:
+    mysql:
+        host: '${var.host}'
+        port: 3306
+        database: '${var.database}'
+        username: '${var.dbuser}'
+        password: '${var.dbpwd}'
 
-                    jwt:
-                        accessToken:
-                            secret: '${var.accesssecret}'
-                            expires: '1200'
-                        refreshToken:
-                            secret: '${var.refreshsecret}'
-                            expires: '604800'
+jwt:
+    accessToken:
+        secret: '${var.accesssecret}'
+        expires: '1200'
+    refreshToken:
+        secret: '${var.refreshsecret}'
+        expires: '604800'
 
-                    mail: 
-                        host: 'smtp.elasticemail.com'
-                        port: 2525
-                        email: 'nickdelucrative@gmail.com'
-                        password: '${var.emailpwd}'
-                        from: 'nickdelucrative@gmail.com'" >> /var/repo/config/config.yaml
-                sudo npm i && sudo npm run build && sudo npm run start:prod
-                echo "<Location />
+mail: 
+    host: 'smtp.elasticemail.com'
+    port: 2525
+    email: 'nickdelucrative@gmail.com'
+    password: '${var.emailpwd}'
+    from: 'nickdelucrative@gmail.com'" >> /var/repo/config/config.yaml ;
+                echo "gcc and c++..." && sudo yum install -y gcc-c++ && 
+                echo "sudo bcrypt install" && sudo npm install --save bcrypt-nodejs && sudo npm uninstall --save bcrypt ;
+                echo "sudo npm i" && sudo npm i ; 
+                echo "sudo npm run build" && sudo npm run build ;
+                echo "echo Location" && echo "<Location />
                     ProxyPass http://localhost:3000/
                     ProxyPassReverse http://localhost:3000/
                     </Location>
                     " >> /etc/httpd/conf.d/nestjs.conf
-                sudo systemctl restart httpd
+                echo "restart httpd" && sudo systemctl restart httpd
+                echo "sudo npm run start:prod" && sudo npm run start:prod
                 EOF
     tags = {
         name = "ecommerce-api"
