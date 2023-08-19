@@ -53,10 +53,10 @@ export class ProductEntity {
       name: 'productId',
       referencedColumnName: 'id',
     },
-    inverseJoinColumn: {
-      name: 'metadataGroupId',
-      referencedColumnName: 'id',
-    },
+    // inverseJoinColumn: {
+    //   name: 'metadataGroupId',
+    //   referencedColumnName: 'id',
+    // },
   })
   metadataGroups?: MetadataGroup[];
 

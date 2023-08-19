@@ -20,8 +20,17 @@ export class ProductService {
     return this.productMetadataRepository.save(newRelationship);
   }
 
+  removeProductMetaData(productId, metadataGroupId: string): any {
+    return this.productMetadataRepository.delete({
+      metadataGroupId,
+      productId,
+    });
+  }
+
   getAll(): Promise<ProductEntity[]> {
-    return this.productRepository.find();
+    return this.productRepository.find({
+      relations: ['metadataGroups', 'metadataGroups.metadataOptions'],
+    });
   }
 
   getOneById(id: string): Promise<ProductEntity> {

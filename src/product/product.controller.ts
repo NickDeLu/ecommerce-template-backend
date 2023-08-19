@@ -50,6 +50,21 @@ export class ProductController {
     return this.productService.setProductMetaData(body);
   }
 
+  @Roles(Role.Admin)
+  @UseGuards(AuthGuard('jwt'), RolesGuard)
+  @ApiCookieAuth()
+  @ApiBearerAuth()
+  @Delete('removemetadata/:productId/:metadataGroupId')
+  removeProductMetadata(
+    @Param('productId') productId: string,
+    @Param('metadataGroupId') metadataGroupId: string,
+  ) {
+    return this.productService.removeProductMetaData(
+      productId,
+      metadataGroupId,
+    );
+  }
+
   @ApiQuery({ name: 'categoryId', type: 'string', required: false })
   @Get()
   async getProducts(@Query('categoryId') catId: string = null) {
@@ -91,6 +106,12 @@ export class ProductController {
   @Get(':id')
   getProduct(@Param('id') id: string) {
     return plainToInstance(ProductDto, this.productService.getOneById(id));
+  }
+
+  @ApiParam({ name: 'id', type: 'string' })
+  @Get('detailed/:id')
+  getProductDetailed(@Param('id') id: string) {
+    return plainToInstance(ProductEntity, this.productService.getOneById(id));
   }
 
   @Roles(Role.Admin)

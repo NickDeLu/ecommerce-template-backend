@@ -70,14 +70,14 @@ export class ProductMetadata {
   metadataGroupId: string;
 
   @ManyToOne(() => ProductEntity, (product) => product.metadataGroups, {
-    onDelete: 'NO ACTION',
+    onDelete: 'CASCADE',
     onUpdate: 'NO ACTION',
   })
   @JoinColumn([{ name: 'productId', referencedColumnName: 'id' }])
   products: ProductEntity[];
 
   @ManyToOne(() => MetadataGroup, (metadataGroup) => metadataGroup.products, {
-    onDelete: 'NO ACTION',
+    onDelete: 'CASCADE',
     onUpdate: 'NO ACTION',
   })
   @JoinColumn([{ name: 'metadataGroupId', referencedColumnName: 'id' }])
